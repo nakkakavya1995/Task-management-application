@@ -169,16 +169,12 @@ function TaskForm({ onTaskCreated }) {
           </option>
 
         </select>
-
-        {/* Due Date */}
         <input
           type="date"
           name="dueDate"
           value={form.dueDate}
           onChange={handleChange}
         />
-
-        {/* Assign Task */}
         <label>
           Assign To
         </label>

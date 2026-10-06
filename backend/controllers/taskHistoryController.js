@@ -1,6 +1,4 @@
 const TaskHistory = require("../models/TaskHistory");
-
-// Get history for logged-in user
 const getHistory = async (req, res) => {
   try {
     const history = await TaskHistory.find({

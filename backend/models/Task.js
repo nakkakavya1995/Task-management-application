@@ -36,15 +36,11 @@ const taskSchema = new mongoose.Schema(
     dueDate: {
       type: Date
     },
-
-    // User who created the task
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
     },
-
-    // User to whom the task is assigned
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

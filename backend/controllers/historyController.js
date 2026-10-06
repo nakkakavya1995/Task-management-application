@@ -1,7 +1,5 @@
 const TaskHistory = require("../models/TaskHistory");
 const User = require("../models/User");
-
-// Get task history
 const getHistory = async (req, res) => {
   try {
     console.log("HISTORY USER ID:", req.userId);
@@ -12,21 +10,14 @@ const getHistory = async (req, res) => {
       .populate("task", "title")
       .populate("performedBy", "name email")
       .sort({ createdAt: -1 });
-
-    // Convert old assignment IDs into student names
     const formattedHistory = await Promise.all(
       history.map(async (item) => {
         const historyItem = item.toObject();
-
-        // Check assignment history
         if (
           historyItem.action &&
           historyItem.action.toLowerCase().includes("assigned")
         ) {
           let assignedName = historyItem.newValue;
-
-          // If old data contains:
-          // "Assigned to user 6ac498..."
           const match = assignedName?.match(
             /(?:Assigned to user\s+)([a-f0-9]{24})/i
           );

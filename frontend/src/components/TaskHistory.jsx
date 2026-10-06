@@ -29,7 +29,6 @@ function TaskHistory() {
     }
   };
 
-  // Load history when component opens
   useEffect(() => {
     fetchHistory();
   }, []);
@@ -64,8 +63,6 @@ function TaskHistory() {
 
     return "•";
   };
-
-  // Get action text
   const getActionText = (item) => {
     if (!item.action) {
       return "Task activity";
@@ -82,8 +79,6 @@ function TaskHistory() {
 
     return item.action;
   };
-
-  // Get action type for styling
   const getActionType = (action) => {
     const text = (action || "").toLowerCase();
 

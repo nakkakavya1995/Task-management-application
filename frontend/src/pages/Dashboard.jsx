@@ -15,8 +15,6 @@ function Dashboard() {
 
   const [activeSection, setActiveSection] = useState("tasks");
 
-  // ================= FETCH TASKS =================
-
   const fetchTasks = async () => {
     try {
       setLoading(true);
@@ -47,17 +45,12 @@ function Dashboard() {
     fetchTasks();
   }, []);
 
-  // ================= ADD TASK =================
-
   const addTask = (task) => {
     setTasks((oldTasks) => [
       task,
       ...oldTasks
     ]);
   };
-
-  // ================= DELETE TASK =================
-
   const deleteTask = (id) => {
     setTasks((oldTasks) =>
       oldTasks.filter(
@@ -65,8 +58,6 @@ function Dashboard() {
       )
     );
   };
-
-  // ================= UPDATE TASK =================
 
   const updateTask = (updatedTask) => {
     setTasks((oldTasks) =>
@@ -77,8 +68,6 @@ function Dashboard() {
       )
     );
   };
-
-  // ================= TASK STATISTICS =================
 
   const total = tasks.length;
 
@@ -97,15 +86,11 @@ function Dashboard() {
       task.status === "COMPLETED"
   ).length;
 
-  // ================= UI =================
-
   return (
     <>
       <Navbar />
 
       <main className="dashboard">
-
-        {/* ================= DASHBOARD HEADER ================= */}
 
         <div className="dashboard-header">
 
@@ -119,16 +104,11 @@ function Dashboard() {
             </p>
           </div>
 
-          {/* Download Button */}
-
           <div className="download-section">
             <DownloadButton />
           </div>
 
         </div>
-
-
-        {/* ================= STATISTICS ================= */}
 
         <div className="stats">
 
@@ -162,9 +142,6 @@ function Dashboard() {
 
         </div>
 
-
-        {/* ================= NAVIGATION BUTTONS ================= */}
-
         <div className="dashboard-tabs">
 
           <button
@@ -197,9 +174,6 @@ function Dashboard() {
 
         </div>
 
-
-        {/* ================= TASKS SECTION ================= */}
-
         {activeSection === "tasks" && (
           <>
 
@@ -225,9 +199,6 @@ function Dashboard() {
 
               </div>
 
-
-              {/* Loading */}
-
               {loading && (
                 <div className="loading">
 
@@ -237,9 +208,6 @@ function Dashboard() {
 
                 </div>
               )}
-
-
-              {/* Error */}
 
               {error && (
                 <div className="error">
@@ -257,9 +225,6 @@ function Dashboard() {
 
                 </div>
               )}
-
-
-              {/* No Tasks */}
 
               {!loading &&
                 !error &&
@@ -279,9 +244,6 @@ function Dashboard() {
                   </div>
 
                 )}
-
-
-              {/* Task Cards */}
 
               {!loading &&
                 !error &&
@@ -308,9 +270,6 @@ function Dashboard() {
 
           </>
         )}
-
-
-        {/* ================= HISTORY SECTION ================= */}
 
         {activeSection === "history" && (
           <TaskHistory />

@@ -42,8 +42,6 @@ body {
   cursor: pointer;
 }
 
-/* Authentication */
-
 .auth-container {
   min-height: 100vh;
   display: flex;
@@ -121,7 +119,6 @@ button {
   margin-bottom: 15px;
 }
 
-/* Dashboard */
 
 .dashboard {
   max-width: 1200px;
@@ -905,9 +902,6 @@ button {
   }
 
 }
- /* =========================================================
-    LOGIN PAGE
-    ========================================================= */
 
 .login-page {
   min-height: 100vh;

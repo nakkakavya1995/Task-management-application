@@ -1,11 +1,6 @@
 const Task = require("../models/Task");
 const User = require("../models/User");
 const TaskHistory = require("../models/TaskHistory");
-
-
-// ======================================================
-// CREATE TASK
-// ======================================================
 const createTask = async (req, res) => {
   try {
     const {
@@ -17,14 +12,12 @@ const createTask = async (req, res) => {
       assignedTo
     } = req.body;
 
-    // Validate title
     if (!title || !title.trim()) {
       return res.status(400).json({
         message: "Task title is required"
       });
     }
 
-    // Validate assigned user
     if (assignedTo) {
       const assignedUser = await User.findById(assignedTo);
 
@@ -45,10 +38,6 @@ const createTask = async (req, res) => {
       user: req.userId,
       assignedTo: assignedTo || null
     });
-
-    // --------------------------------------------------
-    // TASK CREATED HISTORY
-    // --------------------------------------------------
     await TaskHistory.create({
       task: task._id,
       taskTitle: task.title,
@@ -94,11 +83,6 @@ const createTask = async (req, res) => {
     });
   }
 };
-
-
-// ======================================================
-// GET ALL TASKS
-// ======================================================
 const getTasks = async (req, res) => {
   try {
     const tasks = await Task.find({
@@ -122,11 +106,6 @@ const getTasks = async (req, res) => {
     });
   }
 };
-
-
-// ======================================================
-// GET SINGLE TASK
-// ======================================================
 const getTaskById = async (req, res) => {
   try {
     const task = await Task.findOne({
@@ -156,11 +135,6 @@ const getTaskById = async (req, res) => {
     });
   }
 };
-
-
-// ======================================================
-// UPDATE TASK
-// ======================================================
 const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -188,8 +162,6 @@ const updateTask = async (req, res) => {
         message: "Task not found"
       });
     }
-
-    // Store old values before updating
     const oldStatus = task.status;
     const oldPriority = task.priority;
 
@@ -200,11 +172,6 @@ const updateTask = async (req, res) => {
     const newAssignedTo = assignedTo
       ? assignedTo.toString()
       : null;
-
-
-    // --------------------------------------------------
-    // ONLY TASK OWNER CAN CHANGE ASSIGNMENT
-    // --------------------------------------------------
     if (
       assignedTo !== undefined &&
       task.user.toString() !== req.userId.toString()
@@ -213,11 +180,6 @@ const updateTask = async (req, res) => {
         message: "Only the task owner can change assignment"
       });
     }
-
-
-    // --------------------------------------------------
-    // VALIDATE NEW ASSIGNED USER
-    // --------------------------------------------------
     if (assignedTo) {
       const assignedUser = await User.findById(assignedTo);
 
@@ -227,11 +189,6 @@ const updateTask = async (req, res) => {
         });
       }
     }
-
-
-    // --------------------------------------------------
-    // UPDATE TASK FIELDS
-    // --------------------------------------------------
     if (title !== undefined) {
       task.title = title.trim();
     }
@@ -255,15 +212,7 @@ const updateTask = async (req, res) => {
     if (assignedTo !== undefined) {
       task.assignedTo = assignedTo || null;
     }
-
-
-    // Save updated task
     await task.save();
-
-
-    // ==================================================
-    // STATUS HISTORY
-    // ==================================================
     if (
       status !== undefined &&
       oldStatus !== task.status
@@ -277,15 +226,9 @@ const updateTask = async (req, res) => {
         newValue: task.status
       });
     }
-
-
-    // ==================================================
-    // PRIORITY HISTORY
-    // ==================================================
-    if (
-      priority !== undefined &&
-      oldPriority !== task.priority
-    ) {
+    if (priority !== undefined &&
+      oldPriority !== task.priority)
+     {
       await TaskHistory.create({
         task: task._id,
         taskTitle: task.title,
@@ -296,19 +239,11 @@ const updateTask = async (req, res) => {
       });
     }
 
-
-    // ==================================================
-    // ASSIGNMENT HISTORY
-    // ==================================================
-    if (
-      assignedTo !== undefined &&
-      oldAssignedTo !== newAssignedTo
-    ) {
+    if (assignedTo !== undefined &&
+      oldAssignedTo !== newAssignedTo)
+     {
       let oldAssigneeName = "Not assigned";
       let newAssigneeName = "Not assigned";
-
-
-      // Get old student's name
       if (oldAssignedTo) {
         const oldUser = await User.findById(oldAssignedTo);
 
@@ -319,9 +254,6 @@ const updateTask = async (req, res) => {
             "Unknown user";
         }
       }
-
-
-      // Get new student's name
       if (newAssignedTo) {
         const newUser = await User.findById(newAssignedTo);
 
@@ -332,8 +264,6 @@ const updateTask = async (req, res) => {
             "Unknown user";
         }
       }
-
-
       await TaskHistory.create({
         task: task._id,
         taskTitle: task.title,
@@ -343,12 +273,6 @@ const updateTask = async (req, res) => {
         newValue: newAssigneeName
       });
     }
-
-
-    // ==================================================
-    // GENERAL TASK UPDATE HISTORY
-    // ==================================================
-
     const onlyBasicFieldsChanged =
       (title !== undefined && title !== "") ||
       description !== undefined ||
@@ -382,9 +306,6 @@ const updateTask = async (req, res) => {
         newValue: ""
       });
     }
-
-
-    // Populate before sending response
     await task.populate("user", "name email");
     await task.populate("assignedTo", "name email");
 
@@ -403,16 +324,9 @@ const updateTask = async (req, res) => {
     });
   }
 };
-
-
-// ======================================================
-// DELETE TASK
-// ======================================================
 const deleteTask = async (req, res) => {
   try {
     const { id } = req.params;
-
-    // Only task owner can delete
     const task = await Task.findOne({
       _id: id,
       user: req.userId
@@ -423,9 +337,6 @@ const deleteTask = async (req, res) => {
         message: "Task not found or you are not allowed to delete it"
       });
     }
-
-
-    // Save history BEFORE deleting task
     await TaskHistory.create({
       task: task._id,
       taskTitle: task.title,
@@ -434,13 +345,8 @@ const deleteTask = async (req, res) => {
       oldValue: "",
       newValue: ""
     });
-
-
-    // Delete task
-    await Task.findByIdAndDelete(id);
-
-
-    res.status(200).json({
+await Task.findByIdAndDelete(id);
+res.status(200).json({
       message: "Task deleted successfully"
     });
 
@@ -453,11 +359,6 @@ const deleteTask = async (req, res) => {
     });
   }
 };
-
-
-// ======================================================
-// DOWNLOAD TASKS
-// ======================================================
 const downloadTasks = async (req, res) => {
   try {
     const tasks = await Task.find({
@@ -469,15 +370,8 @@ const downloadTasks = async (req, res) => {
       .populate("user", "name email")
       .populate("assignedTo", "name email")
       .sort({ createdAt: -1 });
-
-
-    // CSV Header
     let csv = "";
-
     csv += "Title,Description,Priority,Status,Due Date,Assigned To,Created At\n";
-
-
-    // CSV Rows
     tasks.forEach((task) => {
       const title = `"${(task.title || "").replace(/"/g, '""')}"`;
 
@@ -518,9 +412,6 @@ const downloadTasks = async (req, res) => {
 
       csv += "\n";
     });
-
-
-    // Send CSV
     res.setHeader(
       "Content-Type",
       "text/csv"
@@ -542,11 +433,6 @@ const downloadTasks = async (req, res) => {
     });
   }
 };
-
-
-// ======================================================
-// EXPORT FUNCTIONS
-// ======================================================
 module.exports = {
   createTask,
   getTasks,
