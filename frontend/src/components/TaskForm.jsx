@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import API from "../services/api";
 
 function TaskForm({ onTaskCreated }) {
@@ -8,10 +8,37 @@ function TaskForm({ onTaskCreated }) {
     description: "",
     priority: "MEDIUM",
     status: "PENDING",
-    dueDate: ""
+    dueDate: "",
+    assignedTo: ""
   });
 
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  // Fetch users for task assignment
+  useEffect(() => {
+
+    const fetchUsers = async () => {
+
+      try {
+
+        const response = await API.get("/users");
+
+        setUsers(response.data);
+
+      } catch (error) {
+
+        console.error(
+          "FETCH USERS ERROR:",
+          error
+        );
+
+      }
+    };
+
+    fetchUsers();
+
+  }, []);
 
   const handleChange = (e) => {
 
@@ -30,9 +57,14 @@ function TaskForm({ onTaskCreated }) {
 
     try {
 
+      const taskData = {
+        ...form,
+        assignedTo: form.assignedTo || null
+      };
+
       const response = await API.post(
         "/tasks",
-        form
+        taskData
       );
 
       console.log(
@@ -42,12 +74,14 @@ function TaskForm({ onTaskCreated }) {
 
       onTaskCreated(response.data.task);
 
+      // Reset form
       setForm({
         title: "",
         description: "",
         priority: "MEDIUM",
         status: "PENDING",
-        dueDate: ""
+        dueDate: "",
+        assignedTo: ""
       });
 
     } catch (error) {
@@ -63,7 +97,9 @@ function TaskForm({ onTaskCreated }) {
       );
 
     } finally {
+
       setLoading(false);
+
     }
   };
 
@@ -74,6 +110,7 @@ function TaskForm({ onTaskCreated }) {
 
       <form onSubmit={handleSubmit}>
 
+        {/* Task Title */}
         <input
           type="text"
           name="title"
@@ -83,6 +120,7 @@ function TaskForm({ onTaskCreated }) {
           required
         />
 
+        {/* Description */}
         <textarea
           name="description"
           placeholder="Task description"
@@ -90,11 +128,13 @@ function TaskForm({ onTaskCreated }) {
           onChange={handleChange}
         />
 
+        {/* Priority */}
         <select
           name="priority"
           value={form.priority}
           onChange={handleChange}
         >
+
           <option value="LOW">
             LOW
           </option>
@@ -106,13 +146,16 @@ function TaskForm({ onTaskCreated }) {
           <option value="HIGH">
             HIGH
           </option>
+
         </select>
 
+        {/* Status */}
         <select
           name="status"
           value={form.status}
           onChange={handleChange}
         >
+
           <option value="PENDING">
             PENDING
           </option>
@@ -124,8 +167,10 @@ function TaskForm({ onTaskCreated }) {
           <option value="COMPLETED">
             COMPLETED
           </option>
+
         </select>
 
+        {/* Due Date */}
         <input
           type="date"
           name="dueDate"
@@ -133,7 +178,39 @@ function TaskForm({ onTaskCreated }) {
           onChange={handleChange}
         />
 
-        <button type="submit">
+        {/* Assign Task */}
+        <label>
+          Assign To
+        </label>
+
+        <select
+          name="assignedTo"
+          value={form.assignedTo}
+          onChange={handleChange}
+        >
+
+          <option value="">
+            Unassigned
+          </option>
+
+          {users.map((user) => (
+
+            <option
+              key={user._id}
+              value={user._id}
+            >
+              {user.name} ({user.email})
+            </option>
+
+          ))}
+
+        </select>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={loading}
+        >
           {loading
             ? "Creating..."
             : "Create Task"}

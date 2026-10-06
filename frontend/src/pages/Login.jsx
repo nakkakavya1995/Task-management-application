@@ -51,57 +51,116 @@ function Login() {
   };
 
   return (
-    <div className="auth-container">
+    <div className="login-page">
 
-      <div className="auth-card">
+      <div className="login-card">
 
-        <h1>TaskFlow</h1>
+        {/* Logo / Brand */}
 
-        <h2>Login</h2>
+        <div className="login-brand">
+
+          <div className="login-logo">
+            ✓
+          </div>
+
+          <h1>TaskFlow</h1>
+
+          <p>
+            Manage your tasks efficiently
+          </p>
+
+        </div>
+
+        {/* Login Heading */}
+
+        <div className="login-heading">
+
+          <h2>Welcome Back</h2>
+
+          <p>
+            Login to continue to your dashboard
+          </p>
+
+        </div>
+
+        {/* Error */}
 
         {error && (
-          <div className="error">
-            {error}
+          <div className="login-error">
+            <span>⚠</span>
+            <p>{error}</p>
           </div>
         )}
 
-        <form onSubmit={handleLogin}>
+        {/* Login Form */}
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-            required
-          />
+        <form
+          onSubmit={handleLogin}
+          className="login-form"
+        >
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-            required
-          />
+          <div className="login-field">
+
+            <label htmlFor="email">
+              Email Address
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
+              required
+            />
+
+          </div>
+
+          <div className="login-field">
+
+            <label htmlFor="password">
+              Password
+            </label>
+
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
+              required
+            />
+
+          </div>
 
           <button
             type="submit"
+            className="login-button"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading
+              ? "Logging in..."
+              : "Login"}
           </button>
 
         </form>
 
-        <p>
-          Don't have an account?{" "}
-          <Link to="/register">
-            Register
-          </Link>
-        </p>
+        {/* Register */}
+
+        <div className="login-register">
+
+          <p>
+            Don't have an account?{" "}
+            <Link to="/register">
+              Create an account
+            </Link>
+          </p>
+
+        </div>
 
       </div>
 

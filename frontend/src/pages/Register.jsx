@@ -19,25 +19,15 @@ function Register() {
     setLoading(true);
 
     try {
+      const response = await API.post("/auth/register", {
+        name,
+        email,
+        password
+      });
 
-      const response = await API.post(
-        "/auth/register",
-        {
-          name,
-          email,
-          password
-        }
-      );
+      console.log("REGISTER RESPONSE:", response.data);
 
-      console.log(
-        "REGISTER RESPONSE:",
-        response.data
-      );
-
-      localStorage.setItem(
-        "token",
-        response.data.token
-      );
+      localStorage.setItem("token", response.data.token);
 
       localStorage.setItem(
         "user",
@@ -47,11 +37,7 @@ function Register() {
       navigate("/dashboard");
 
     } catch (error) {
-
-      console.error(
-        "REGISTER ERROR:",
-        error
-      );
+      console.error("REGISTER ERROR:", error);
 
       setError(
         error.response?.data?.message ||
@@ -64,69 +50,123 @@ function Register() {
   };
 
   return (
-    <div className="auth-container">
+    <div className="register-page">
 
-      <div className="auth-card">
+      <div className="register-card">
 
-        <h1>TaskFlow</h1>
+        <div className="register-brand">
 
-        <h2>Create Account</h2>
+          <div className="register-logo">
+            ✓
+          </div>
+
+          <h1>TaskFlow</h1>
+
+          <p>
+            Manage your tasks efficiently
+          </p>
+
+        </div>
+
+        <div className="register-heading">
+
+          <h2>Create Your Account</h2>
+
+          <p>
+            Sign up to start managing your tasks.
+          </p>
+
+        </div>
 
         {error && (
-          <div className="error">
-            {error}
+          <div className="register-error">
+            <span>⚠</span>
+            <p>{error}</p>
           </div>
         )}
 
-        <form onSubmit={handleRegister}>
+        <form
+          onSubmit={handleRegister}
+          className="register-form"
+        >
 
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) =>
-              setName(e.target.value)
-            }
-            required
-          />
+          <div className="register-field">
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-            required
-          />
+            <label htmlFor="register-name">
+              Full Name
+            </label>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-            required
-          />
+            <input
+              id="register-name"
+              type="text"
+              placeholder="Enter your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+
+          </div>
+
+          <div className="register-field">
+
+            <label htmlFor="register-email">
+              Email Address
+            </label>
+
+            <input
+              id="register-email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+
+          </div>
+
+          <div className="register-field">
+
+            <label htmlFor="register-password">
+              Password
+            </label>
+
+            <input
+              id="register-password"
+              type="password"
+              placeholder="Create a password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+
+          </div>
 
           <button
             type="submit"
+            className="register-button"
             disabled={loading}
           >
             {loading
-              ? "Creating..."
-              : "Register"}
+              ? "Creating Account..."
+              : "Create Account"}
           </button>
 
         </form>
 
-        <p>
-          Already have an account?{" "}
-          <Link to="/login">
-            Login
-          </Link>
-        </p>
+        <div className="register-login">
+
+          <p>
+            Already have an account?{" "}
+            <Link to="/login">
+              Login
+            </Link>
+          </p>
+
+        </div>
+
+        <div className="register-footer">
+          Secure & simple task management
+        </div>
 
       </div>
 

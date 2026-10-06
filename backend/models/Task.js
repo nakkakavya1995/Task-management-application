@@ -15,13 +15,21 @@ const taskSchema = new mongoose.Schema(
 
     priority: {
       type: String,
-      enum: ["LOW", "MEDIUM", "HIGH"],
+      enum: [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
       default: "MEDIUM"
     },
 
     status: {
       type: String,
-      enum: ["PENDING", "IN_PROGRESS", "COMPLETED"],
+      enum: [
+        "PENDING",
+        "IN_PROGRESS",
+        "COMPLETED"
+      ],
       default: "PENDING"
     },
 
@@ -29,10 +37,18 @@ const taskSchema = new mongoose.Schema(
       type: Date
     },
 
+    // User who created the task
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
+    },
+
+    // User to whom the task is assigned
+    assignedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null
     }
   },
   {
@@ -40,4 +56,7 @@ const taskSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Task", taskSchema);
+module.exports = mongoose.model(
+  "Task",
+  taskSchema
+);
